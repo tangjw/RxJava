@@ -8,6 +8,7 @@ import android.view.View;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class MainActivity extends AppCompatActivity {
 	
@@ -20,8 +21,9 @@ public class MainActivity extends AppCompatActivity {
 	}
 	
 	public void click(View view) {
-		rxJava();
-		rxJava1();
+//		rxJava();
+//		rxJava1();
+		rxJava2();
 	}
 	
 	/**
@@ -99,6 +101,82 @@ public class MainActivity extends AppCompatActivity {
 						Log.d(TAG, s);
 					}
 				});
+	}
+	
+	/**
+	 * 变换
+	 * 操作符（Operators）
+	 * 操作符就是为了解决对Observable对象的变换的问题，操作符用于在Observable和最终的Subscriber
+	 * 之间修改Observable发出的事件。RxJava提供了很多很有用的操作符。比如map操作符，就是用来把
+	 * 把一个事件转换为另一个事件的。
+	 */
+	private void rxJava2() {
+		// map()操作符就是用于变换 Observable对象的，map操作符返回一个 Observable 对象，这样就可以
+		// 实现链式调用，在一个 Observable对象上多次使用 map操作符，最终将最简洁的数据传递给Subscriber对象。
+		Observable.just("Hello, RxJava!")
+				.map(new Func1<String, String>() {
+					@Override
+					public String call(String s) {
+						return s + "--Tjw";
+					}
+				})
+				.subscribe(new Action1<String>() {
+					@Override
+					public void call(String s) {
+						Log.d(TAG, s);
+					}
+				});
+		
+		// map操作符进阶
+		// map操作符更有趣的一点是它不必返回Observable对象返回的类型，你可以使用map操作符返回
+		// 一个发出新的数据类型的observable对象。
+		Observable.just("Hello, RxJava!")
+				.map(new Func1<String, Integer>() {
+					@Override
+					public Integer call(String s) {
+						return s.hashCode();
+					}
+				})
+				.subscribe(new Action1<Integer>() {
+					@Override
+					public void call(Integer integer) {
+						Log.d(TAG, "HashCode:-> " + integer);
+					}
+				});
+		
+		
+		// Subscriber做的事情越少越好 比如再增加一个 map
+		Observable.just("Hello, RxJava!")
+				.map(new Func1<String, Integer>() {
+					@Override
+					public Integer call(String s) {
+						return s.hashCode();
+					}
+				})
+				.map(new Func1<Integer, String>() {
+					@Override
+					public String call(Integer integer) {
+						return Integer.toString(integer);
+					}
+				})
+				.subscribe(new Action1<String>() {
+					@Override
+					public void call(String s) {
+						Log.d(TAG, "String HashCode:-> " + s);
+					}
+				});
 		
 	}
+	
+	/**
+	 两点:
+	 1.Observable和Subscriber可以做任何事情
+	 Observable可以是一个数据库查询，Subscriber用来显示查询结果；Observable可以是屏幕上的点击事件，
+	 Subscriber用来响应点击事件；Observable可以是一个网络请求，Subscriber用来显示请求结果。
+	 
+	 2.Observable和Subscriber是独立于中间的变换过程的。
+	 在Observable和Subscriber中间可以增减任何数量的map。整个系统是高度可组合的，操作数据是一个很简单的过程。
+	 */
+	
+	
 }
