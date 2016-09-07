@@ -178,5 +178,14 @@ public class MainActivity extends AppCompatActivity {
 	 在Observable和Subscriber中间可以增减任何数量的map。整个系统是高度可组合的，操作数据是一个很简单的过程。
 	 */
 	
+	/**
+	 * Observable.from()方法，它接收一个集合作为输入，然后每次输出一个元素给subscriber：
+	 * Observable.flatMap()接收一个Observable的输出作为输入，同时输出另外一个Observable。
+	 * filter()输出和输入相同的元素，并且会过滤掉那些不满足检查条件的。
+	 * take()输出最多指定数量的结果。
+	 * doOnNext()允许我们在每次输出一个元素之前做一些额外的事情，比如这里的保存标题。
+	 * 
+	 */
+	
 	
 }
