@@ -16,6 +16,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ThirdActivity extends AppCompatActivity {
@@ -49,6 +50,24 @@ public class ThirdActivity extends AppCompatActivity {
 	public void click(View view) {
 //		retrofit();
 		retrofit1();
+		retrofit2();
+	}
+	
+	private void retrofit2() {
+		
+		Retrofit retrofit = new Retrofit.Builder()
+				.addConverterFactory(GsonConverterFactory.create())
+				.addCallAdapterFactory(RxJavaCallAdapterFactory.create())//新的配置
+				.baseUrl("https://api.github.com/")
+				.client(mOkHttpClient)
+				.build();
+		GitHubService service = retrofit.create(GitHubService.class);
+		
+//		service.contributor("square", "retrofit")
+//				.subscribeOn(Sch)
+		
+		
+				
 	}
 	
 	/**
