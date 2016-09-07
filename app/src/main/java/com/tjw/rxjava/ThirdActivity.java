@@ -63,6 +63,7 @@ public class ThirdActivity extends AppCompatActivity {
 				.build();
 		GitHubService service = retrofit.create(GitHubService.class);
 		
+		//http://www.jianshu.com/p/1fb294ec7e3b
 //		service.contributor("square", "retrofit")
 //				.subscribeOn(Sch)
 		
