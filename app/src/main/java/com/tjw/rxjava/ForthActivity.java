@@ -3,6 +3,10 @@ package com.tjw.rxjava;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
+
+import com.tjw.rxjava.HttpApi.PartyService;
+import com.tjw.rxjava.bean.StudyMaterials;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -22,11 +26,14 @@ public class ForthActivity extends AppCompatActivity {
 	private static final String TAG = "RxJava";
 	private OkHttpClient mOkHttpClient;
 	private Request mRequest;
+	private TextView mTextView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		mTextView = (TextView) findViewById(R.id.textView);
 		
 		HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
 		loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
@@ -40,13 +47,39 @@ public class ForthActivity extends AppCompatActivity {
 	}
 	
 	public void click(View view) {
-		retrofit();
+//		retrofit();
+		retrofit1();
+	}
+	
+	private void retrofit1() {
+		//http://118.145.26.214:8086/lianyi/MtsNews/getNews.do
+		Retrofit retrofit = new Retrofit.Builder()
+				.baseUrl("http://118.145.26.214:8086/")
+				.addConverterFactory(GsonConverterFactory.create())
+				.client(mOkHttpClient)
+				.build();
+		
+		retrofit.create(PartyService.class)
+				.getStudyMaterials()
+				.enqueue(new Callback<StudyMaterials>() {
+					@Override
+					public void onResponse(Call<StudyMaterials> call, Response<StudyMaterials> response) {
+						System.out.println(Thread.currentThread().getName());
+						mTextView.setText(response.body().getData().get(0).getName());
+					}
+					
+					@Override
+					public void onFailure(Call<StudyMaterials> call, Throwable t) {
+						
+					}
+				});
 	}
 	
 	/**
 	 * Retrofit
 	 */
 	private void retrofit() {
+		//http://118.145.26.214:8086/lianyi/MtsNews/getNews.do
 		Retrofit retrofit = new Retrofit.Builder()
 				.baseUrl("http://192.168.1.233:8080/")
 				.addConverterFactory(GsonConverterFactory.create())

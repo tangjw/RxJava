@@ -12,7 +12,7 @@ import rx.Observable;
  * Created by tang-jw on 2016/9/7.
  */
 public interface GitHubService {
-	
+
 	@GET("repos/{owner}/{repo}/contributors")
 	Call<List<Contributor>> contributors(
 			@Path("owner") String owner,
