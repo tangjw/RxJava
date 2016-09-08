@@ -43,7 +43,6 @@ public class ForthActivity extends AppCompatActivity {
 		retrofit();
 	}
 	
-	
 	/**
 	 * Retrofit
 	 */
@@ -61,12 +60,11 @@ public class ForthActivity extends AppCompatActivity {
 			@Override
 			public void onResponse(Call<NewsData> call, Response<NewsData> response) {
 				System.out.println("线程名:" + Thread.currentThread().getName() + "\n错误码:" + response.body().getErrorCode());
-				
 			}
 			
 			@Override
 			public void onFailure(Call<NewsData> call, Throwable t) {
-				
+				System.out.println("error");
 			}
 		});
 		
