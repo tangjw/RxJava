@@ -3,7 +3,6 @@ package com.tjw.rxjava;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.TextView;
 
 import java.io.File;
 import java.util.List;
@@ -21,7 +20,6 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class ThirdActivity extends AppCompatActivity {
@@ -29,13 +27,11 @@ public class ThirdActivity extends AppCompatActivity {
 	private static final String TAG = "RxJava";
 	private OkHttpClient mOkHttpClient;
 	private Request mRequest;
-	private TextView mTextView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		mTextView = (TextView) findViewById(R.id.textView);
 		
 		mOkHttpClient = new OkHttpClient().newBuilder()
 				.addInterceptor(new LoggerInterceptor("okHttp", true))
@@ -64,7 +60,7 @@ public class ThirdActivity extends AppCompatActivity {
 		
 		Retrofit retrofit = new Retrofit.Builder()
 				.addConverterFactory(GsonConverterFactory.create())
-				.addCallAdapterFactory(RxJavaCallAdapterFactory.create())//新的配置
+				.addCallAdapterFactory(RxJavaCallAdapterFactory.create()) //新的配置
 				.baseUrl("https://api.github.com/")
 				.client(mOkHttpClient)
 				.build();
@@ -73,16 +69,11 @@ public class ThirdActivity extends AppCompatActivity {
 		//http://www.jianshu.com/p/1fb294ec7e3b
 		service.contributor("square", "retrofit")
 				.subscribeOn(Schedulers.io())
-				.doOnNext(new Action1<List<Contributor>>() {
-					@Override
-					public void call(List<Contributor> contributors) {
-						System.out.println("call thread name -> "+Thread.currentThread().getName());
-					}
-				})
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(new Subscriber<List<Contributor>>() {
 					@Override
 					public void onCompleted() {
+						
 						
 					}
 					
@@ -96,8 +87,6 @@ public class ThirdActivity extends AppCompatActivity {
 						for (Contributor contributor : contributors) {
 							System.out.println(contributor.login + " (" + contributor.contributions + ")");
 						}
-						mTextView.setText(contributors.size()+"");
-						System.out.println("onNext thread name -> "+Thread.currentThread().getName());
 					}
 				});
 		
