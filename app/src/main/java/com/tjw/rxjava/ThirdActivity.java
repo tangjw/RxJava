@@ -18,6 +18,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class ThirdActivity extends AppCompatActivity {
 	
@@ -49,7 +52,7 @@ public class ThirdActivity extends AppCompatActivity {
 	
 	public void click(View view) {
 //		retrofit();
-		retrofit1();
+//		retrofit1();
 		retrofit2();
 	}
 	
@@ -57,15 +60,35 @@ public class ThirdActivity extends AppCompatActivity {
 		
 		Retrofit retrofit = new Retrofit.Builder()
 				.addConverterFactory(GsonConverterFactory.create())
-				.addCallAdapterFactory(RxJavaCallAdapterFactory.create())//新的配置
+				.addCallAdapterFactory(RxJavaCallAdapterFactory.create()) //新的配置
 				.baseUrl("https://api.github.com/")
 				.client(mOkHttpClient)
 				.build();
 		GitHubService service = retrofit.create(GitHubService.class);
 		
 		//http://www.jianshu.com/p/1fb294ec7e3b
-//		service.contributor("square", "retrofit")
-//				.subscribeOn(Sch)
+		service.contributor("square", "retrofit")
+				.subscribeOn(Schedulers.io())
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new Subscriber<List<Contributor>>() {
+					@Override
+					public void onCompleted() {
+						
+						
+					}
+					
+					@Override
+					public void onError(Throwable e) {
+						
+					}
+					
+					@Override
+					public void onNext(List<Contributor> contributors) {
+						for (Contributor contributor : contributors) {
+							System.out.println(contributor.login + " (" + contributor.contributions + ")");
+						}
+					}
+				});
 		
 		
 				
