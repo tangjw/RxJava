@@ -4,6 +4,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import rx.Observable;
 
@@ -23,6 +24,7 @@ public interface GitHubService {
 			@Path("owner") String owner,
 			@Path("repo") String repo);
 	
+	@Headers("Cache-Control: max-age=640000")
 	@GET("android/msg.txt")
 	Call<NewsData> newsList();
 	

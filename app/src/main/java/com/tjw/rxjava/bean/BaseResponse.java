@@ -4,11 +4,10 @@ package com.tjw.rxjava.bean;
  * ^-^
  * Created by tang-jw on 9/8.
  */
-public class BaseResponse<T> {
+public class BaseResponse {
 	
 	private int errorCode;
 	private String errorMsg;
-	private T data;
 	
 	public int getErrorCode() {
 		return errorCode;
@@ -26,11 +25,4 @@ public class BaseResponse<T> {
 		this.errorMsg = errorMsg;
 	}
 	
-	public T getData() {
-		return data;
-	}
-	
-	public void setData(T data) {
-		this.data = data;
-	}
 }

@@ -28,23 +28,24 @@ public class CacheInterceptor implements Interceptor {
 			
 			if (NetWorkUtils.isNetWorkConnected(App.mApp)) {
 				System.out.println("网络可用");
+				//有网的时候读接口上的@Headers里的配置，你可以在这里进行统一的设置
+				String cacheControl = request.cacheControl().toString();
 				return response.newBuilder()
 						.removeHeader("Pragma")
-						.removeHeader("Cache-Control")
-						.header("Cache-Control", "public, max-age=10")
+						.header("Cache-Control", cacheControl)
 						.build();
+				
 			} else {
 				System.out.println("网络不可用2");
 				return response.newBuilder()
 						.removeHeader("Pragma")
-						.removeHeader("Cache-Control")
 						.header("Cache-Control", "public, only-if-cached, max-stale=2419200")
 						.build();
 			}
 			
-		} else {
+		} 
 			
-			return chain.proceed(request);
-		}
+		return chain.proceed(request);
+		
 	}
 }
