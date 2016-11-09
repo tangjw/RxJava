@@ -5,8 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -34,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
 		//String 类型的 可观察者 被观察者 事件源
 		Observable<String> stringObservable = Observable.create(
 				new Observable.OnSubscribe<String>() {
-					
 					@Override
 					public void call(Subscriber<? super String> subscriber) {
 						Log.i(TAG, "call");
@@ -75,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 	 */
 	private void rxJava1() {
 		
+		// Observable.just就是用来创建只发出一个事件就结束的Observable对象,
 		// 上面创建Observable对象的代码可以简化为一行
 		Observable<String> stringObservable = Observable.just("Hello, RxJava!");
 		
@@ -99,6 +103,16 @@ public class MainActivity extends AppCompatActivity {
 					@Override
 					public void call(String s) {
 						Log.d(TAG, s);
+					}
+				}, new Action1<Throwable>() {
+					@Override
+					public void call(Throwable throwable) {
+						Log.i(TAG, "onError");
+					}
+				}, new Action0() {
+					@Override
+					public void call() {
+						Log.i(TAG, "onCompleted");
 					}
 				});
 	}
@@ -184,8 +198,76 @@ public class MainActivity extends AppCompatActivity {
 	 * filter()输出和输入相同的元素，并且会过滤掉那些不满足检查条件的。
 	 * take()输出最多指定数量的结果。
 	 * doOnNext()允许我们在每次输出一个元素之前做一些额外的事情，比如这里的保存标题。
-	 * 
 	 */
 	
+	public void rxJava3() {
+		
+		Observable<List<String>> observable = Observable.create((Observable.OnSubscribe<List<String>>) subscriber -> {
+//				subscriber.onNext();
+		});
+		
+		observable.flatMap(Observable::from).subscribe(System.out::println);
+		
+	}
+	
+	private void rxJava31() {
+		
+		List<String> urls = new ArrayList<>();
+		
+		Observable.just(urls)
+				.flatMap(Observable::from)
+				.subscribe(System.out::println);
+	}
+	
+	private void rxJava4() {
+		query("hello")
+				.flatMap(new Func1<List<String>, Observable<String>>() {
+					@Override
+					public Observable<String> call(List<String> strings) {
+						return Observable.from(strings);
+					}
+				})
+				.flatMap(new Func1<String, Observable<String>>() {
+					@Override
+					public Observable<String> call(String s) {
+						return getTitle(s);
+					}
+				})
+				.subscribe(new Action1<String>() {
+					
+					@Override
+					public void call(String s) {
+						System.out.println(s);
+					}
+				});
+	}
+	
+	
+	private static Observable<String> getTitle(String Url) {
+		return Observable.create(subscriber -> mapUrlToTitle(subscriber, Url));
+	}
+	
+	
+	private static void mapUrlToTitle(Subscriber<? super String> subscriber, String url) {
+		
+	}
+	
+	private static Observable<List<String>> query(String text) {
+		Observable<List<String>> myObservable = Observable.create(new Observable.OnSubscribe<List<String>>() {
+			@Override
+			public void call(Subscriber<? super List<String>> subscriber) {
+				List<String> myList = new ArrayList<>();
+				for (int i = 0; i < 100; i++) {
+					myList.add(text + i + ".com");
+				}
+				if (!subscriber.isUnsubscribed()) {
+					subscriber.onNext(myList);
+					subscriber.onCompleted();
+				}
+			}
+		});
+		
+		return myObservable;
+	}
 	
 }

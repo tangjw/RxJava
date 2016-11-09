@@ -141,6 +141,9 @@ public class ThirdActivity extends AppCompatActivity {
 		call.enqueue(new Callback<List<Contributor>>() {
 			@Override
 			public void onResponse(Call<List<Contributor>> call, Response<List<Contributor>> response) {
+				if (response.isSuccessful()) {
+					
+				}
 				for (Contributor contributor : response.body()) {
 					System.out.println(contributor.login + " (" + contributor.contributions + ")");
 				}
